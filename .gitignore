@@ -73,4 +73,4 @@ go.work
 
 # Temporary files
 *.tmp
-*.temp
+*.temptmp/

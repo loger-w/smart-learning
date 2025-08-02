@@ -73,4 +73,8 @@ go.work
 
 # Temporary files
 *.tmp
-*.temptmp/
+*.temp
+
+# Go build outputs and tmp directories
+tmp/
+**/tmp/

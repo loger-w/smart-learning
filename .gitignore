@@ -78,3 +78,5 @@ go.work
 # Go build outputs and tmp directories
 tmp/
 **/tmp/
+
+.vercel

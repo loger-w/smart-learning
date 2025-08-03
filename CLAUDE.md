@@ -11,19 +11,19 @@ Smart Learning is an intelligent English learning platform combining modern fron
 ### Technology Stack
 
 **Frontend**:
-- Vite + React + TypeScript
-- TailwindCSS + Shadcn UI
-- TanStack Query (server state) + Zustand (client state)
-- TanStack Router (type-safe routing)
-- React Hook Form
-- Vitest + React Testing Library
+- Vite 7.0.4 + React 19.1.0 + TypeScript 5.8.3
+- TailwindCSS 4.1.11 + Shadcn UI 0.9.5
+- TanStack Query 5.84.1 (server state) + Zustand 5.0.7 (client state)
+- TanStack Router 1.130.12 (type-safe routing)
+- React Hook Form 7.62.0 + Zod 4.0.14 (validation)
+- Vitest 3.2.4 + React Testing Library 16.3.0
 
 **Backend**:
-- Go + Gin framework
-- PostgreSQL (Supabase hosted)
+- Go 1.24.5 + Gin 1.10.1 framework
+- PostgreSQL (Supabase hosted) with lib/pq 1.10.9 driver
 - JWT authentication
 - Claude Haiku API for AI features
-- Go Testing + Testify
+- Go Testing framework + Air for hot reload
 
 ### Project Structure
 
@@ -47,11 +47,12 @@ smart-learning/
 ```bash
 cd frontend
 npm install          # Install dependencies
-npm run dev          # Start development server
-npm run build        # Build for production
+npm run dev          # Start development server (Vite)
+npm run build        # Build for production (TypeScript + Vite)
+npm run preview      # Preview production build locally
 npm run lint         # Run ESLint
 npm run type-check   # TypeScript type checking
-npm run test         # Run tests
+npm run test         # Run tests (Vitest)
 npm run test:watch   # Run tests in watch mode
 npm run test:coverage # Generate coverage report
 ```
@@ -59,23 +60,36 @@ npm run test:coverage # Generate coverage report
 ### Backend Development
 ```bash
 cd backend
+# Using Go commands directly
 go mod tidy          # Install/update dependencies
 go run cmd/main.go   # Start development server
 go test ./...        # Run all tests
 go test -v ./...     # Run tests with verbose output
 go test -cover ./... # Run tests with coverage
+
+# Using Makefile (recommended)
+make deps            # Install/update dependencies (calls go mod tidy)
+make run             # Build and start server
+make dev             # Start with air hot reload
+make test            # Run all tests
+make coverage        # Run tests with coverage
+make lint            # Run golangci-lint
+make build           # Build binary
+make clean           # Clean build artifacts
 ```
 
 ### Database Operations
 ```bash
-# Create migration
+cd backend
+# Using golang-migrate directly
 migrate create -ext sql -dir migrations -seq migration_name
+migrate -path migrations -database "postgresql://localhost/smart_learning_dev?sslmode=disable" up
+migrate -path migrations -database "postgresql://localhost/smart_learning_dev?sslmode=disable" down 1
 
-# Apply migrations
-migrate -path migrations -database "postgresql://localhost/smart_learning_db?sslmode=disable" up
-
-# Rollback migrations
-migrate -path migrations -database "postgresql://localhost/smart_learning_db?sslmode=disable" down 1
+# Using Makefile (recommended)
+make migrate-create name=migration_name  # Create new migration
+make migrate-up                          # Apply all pending migrations
+make migrate-down                        # Rollback last migration
 ```
 
 ## Core Features
@@ -105,6 +119,21 @@ migrate -path migrations -database "postgresql://localhost/smart_learning_db?ssl
 - **Relationships**: Proper foreign key constraints and cascading deletes
 - **Indexing**: Optimized for common query patterns
 
+## Project Configuration
+
+### Frontend Configuration
+- **Path Alias**: `@` maps to `./src` directory for imports
+- **Testing**: Vitest with jsdom environment, setup file at `./src/test/setup.ts`
+- **ESLint**: Modern flat config with TypeScript, React Hooks, and React Refresh plugins
+- **TailwindCSS**: V4 with Vite plugin integration
+- **Vite Config**: React plugin + TailwindCSS plugin with path alias support
+
+### Backend Configuration
+- **Main Entry**: `cmd/main.go`
+- **Internal Structure**: handlers, middleware, models, repositories, services
+- **Database Package**: `pkg/database` with PostgreSQL connection
+- **Environment**: Uses `.env` file with godotenv for local development
+
 ## Development Standards
 
 ### Git Workflow
@@ -122,9 +151,12 @@ migrate -path migrations -database "postgresql://localhost/smart_learning_db?ssl
 
 ### Prerequisites
 - Node.js >= 18
-- Go >= 1.21
+- Go >= 1.24.5
 - PostgreSQL (or Supabase account)
 - Claude API key for AI features
+- Air (for Go hot reload): `go install github.com/cosmtrek/air@latest`
+- golang-migrate (for database migrations): `go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest`
+- golangci-lint (for Go linting): `go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest`
 
 ### Quick Setup
 For detailed environment setup instructions, please refer to **[ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md)**
@@ -178,49 +210,35 @@ For detailed information, refer to the comprehensive documentation in the `docs/
 - Feature specifications in `04-feature-modules.md`
 - Deployment procedures in `05-deployment-guide.md`
 
-## custum
+## Development Philosophy and Code Standards
 
-You are a Senior Front-End Developer and an Expert in ReactJS, JavaScript, TypeScript, HTML, CSS and modern UI/UX frameworks (e.g., TailwindCSS, Shadcn). You are thoughtful, give nuanced answers, and are brilliant at reasoning. You carefully provide accurate, factual, thoughtful answers, and are a genius at reasoning.
+### Core Development Principles
+- **Expertise Focus**: Senior-level React, TypeScript, and modern web development
+- **Code Quality**: DRY principle, bug-free, fully functional implementations
+- **Readability First**: Prioritize code clarity and maintainability over performance
+- **Complete Implementation**: No TODOs, placeholders, or missing pieces
+- **Accessibility**: Implement proper ARIA labels, keyboard navigation, and semantic HTML
 
-- Follow the user’s requirements carefully & to the letter.
-- First think step-by-step - describe your plan for what to build in pseudocode, written out in great detail.
-- Confirm, then write code!
-- Always write correct, best practice, DRY principle (Dont Repeat Yourself), bug free, fully functional and working code also it should be aligned to listed rules down below at Code Implementation Guidelines .
-- Focus on easy and readability code, over being performant.
-- Fully implement all requested functionality.
-- Leave NO todo’s, placeholders or missing pieces.
-- Ensure code is complete! Verify thoroughly finalised.
-- Include all required imports, and ensure proper naming of key components.
-- Be concise Minimize any other prose.
-- If you think there might not be a correct answer, you say so.
-- If you do not know the answer, say so, instead of guessing.
+### Code Implementation Rules
 
-### Coding Environment
-The user asks questions about the following coding languages:
-- ReactJS
-- JavaScript
-- TypeScript
-- TailwindCSS
-- HTML
-- CSS
-- TankStack
+#### General Guidelines
+- Use early returns for improved code readability
+- Prefer `const` arrow functions over function declarations
+- Use descriptive variable and function names with proper prefixes (e.g., `handleClick`)
+- Implement accessibility features on interactive elements
+- Define TypeScript types whenever possible
 
-### Code Implementation Guidelines
-Follow these rules when you write code:
-- Use early returns whenever possible to make the code more readable.
-- Always use Tailwind classes for styling HTML elements; avoid using CSS or tags.
-- Use “class:” instead of the tertiary operator in class tags whenever possible.
-- Use descriptive variable and function/const names. Also, event functions should be named with a “handle” prefix, like “handleClick” for onClick and “handleKeyDown” for onKeyDown.
-- Implement accessibility features on elements. For example, a tag should have a tabindex=“0”, aria-label, on:click, and on:keydown, and similar attributes.
-- Use consts instead of functions, for example, “const toggle = () =>”. Also, define a type if possible.
-生成 console.log 時，記得 JSON.stringify()
-改 code 時，只改我這次跟你討論的部分，不要改無關的 code
-只有我叫你實作的時候才要改 code，不然不要改任何的 code，只先提出討論即可
-盡量使用 pure function
-在做 value 的 fallback 的時候，請用 ?? 而非 ||
-如果是請你做 commit 資訊、上版的問題時，格式請統一並使用正規的方法，例如: feat(fix) ...
-若解決完使用者的問題，請簡述問題、把有問題的程式提出並闡述問題點、為甚麼發生以及怎麼用了甚麼方法解決，若之前有介紹過就不用再介紹一次
-不要刪除註解的程式碼
-思考過程跟回答總是為繁體中文
-如果是討論的時候就不要修改任何程式碼 例如我會問你你認為呢或是你有任何想法嗎之類的
-盡量使用 early return
+#### Frontend-Specific Rules
+- **Styling**: Always use TailwindCSS classes; avoid inline CSS
+- **State Management**: Use `??` for value fallback instead of `||`
+- **Functions**: Prefer pure functions when possible
+- **Logging**: Use `JSON.stringify()` for complex object logging
+- **Discussion vs Implementation**: Only modify code when explicitly asked to implement
+
+#### Communication
+- **Language**: All explanations and thinking process in Traditional Chinese
+- **Problem Solving**: When resolving issues, provide:
+  - Brief problem description
+  - Problematic code identification
+  - Root cause analysis
+  - Solution explanation

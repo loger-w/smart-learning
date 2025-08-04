@@ -35,51 +35,53 @@ graph TB
 ```
 src/
 ├── components/              # 可重用組件
-│   ├── ui/                 # 基礎 UI 組件
-│   │   ├── Button.tsx
-│   │   ├── Input.tsx
-│   │   ├── Card.tsx
-│   │   └── ...
-│   ├── layout/             # 布局組件
-│   │   ├── Header.tsx
-│   │   ├── Sidebar.tsx
-│   │   └── Layout.tsx
-│   ├── learning/           # 學習相關組件
-│   │   ├── FlashCard.tsx
-│   │   ├── WordList.tsx
-│   │   └── ProgressChart.tsx
-│   └── auth/               # 認證組件
-│       ├── LoginForm.tsx
-│       └── RegisterForm.tsx
-├── pages/                  # 頁面組件
-│   ├── Home.tsx
-│   ├── Dashboard.tsx
-│   ├── Learning.tsx
-│   └── Profile.tsx
-├── hooks/                  # 自定義 Hooks
-│   ├── useAuth.ts
-│   ├── useWordList.ts
-│   └── useLearningStats.ts
-├── store/                  # 狀態管理
-│   ├── authStore.ts
-│   ├── learningStore.ts
-│   └── uiStore.ts
+│   └── ui/                 # 基礎 UI 組件 (Shadcn UI)
+│       ├── button.tsx
+│       ├── input.tsx
+│       ├── dialog.tsx
+│       └── sonner.tsx
+├── features/               # 功能模組化架構
+│   ├── auth/              # 認證功能模組
+│   │   ├── components/    # 認證相關組件
+│   │   │   ├── AuthFormContainer.tsx
+│   │   │   ├── AuthHeader.tsx
+│   │   │   ├── AuthLayout.tsx
+│   │   │   ├── ForgotPasswordButton.tsx
+│   │   │   ├── LoginButton.tsx
+│   │   │   ├── LoginForm.tsx
+│   │   │   ├── RegisterButton.tsx
+│   │   │   └── index.ts
+│   │   └── pages/         # 認證頁面
+│   │       └── LoginPage.tsx
+│   └── dashboard/         # 儀表板功能模組
+│       └── pages/
+│           └── DashboardPage.tsx
+├── hooks/                  # 自定義 Hooks (依功能分組)
+│   └── auth/              # 認證相關 Hooks
+│       ├── useAuth.ts
+│       └── useLoginForm.ts
+├── lib/                    # 共用函式庫
+│   └── utils.ts           # 工具函數 (含 cn 函數)
+├── providers/              # Context Providers
+│   └── AppProviders.tsx   # 應用程式 Providers 包裝
+├── routes/                 # 路由配置 (TanStack Router)
+│   ├── index.tsx          # 路由定義
+│   └── routeTree.tsx      # 路由樹生成
 ├── services/               # API 服務
-│   ├── api.ts
-│   ├── authService.ts
-│   ├── wordService.ts
-│   └── aiService.ts
-├── utils/                  # 工具函數
-│   ├── validation.ts
-│   ├── formatting.ts
-│   └── constants.ts
-├── types/                  # TypeScript 類型
-│   ├── user.ts
-│   ├── word.ts
-│   └── learning.ts
-└── assets/                 # 靜態資源
-    ├── images/
-    └── icons/
+│   └── authService.ts     # 認證 API 服務
+├── stores/                 # 狀態管理 (Zustand)
+│   └── authStore.ts       # 認證狀態管理
+├── test/                   # 測試配置
+│   └── setup.ts           # 測試環境設定
+├── types/                  # TypeScript 類型定義
+│   └── auth.ts            # 認證相關類型
+├── assets/                 # 靜態資源
+│   └── react.svg          # React Logo
+├── App.tsx                 # 主應用程式組件
+├── App.css                 # 應用程式樣式
+├── main.tsx                # 應用程式入口點
+├── index.css               # 全域樣式
+└── vite-env.d.ts          # Vite 環境類型
 ```
 
 ### 狀態管理策略

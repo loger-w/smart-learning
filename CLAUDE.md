@@ -30,15 +30,24 @@ Smart Learning is an intelligent English learning platform combining modern fron
 ```
 smart-learning/
 ├── frontend/          # React frontend application
+│   └── src/
+│       ├── components/     # Reusable components
+│       │   └── ui/        # Shadcn UI components
+│       ├── features/      # Feature-based modules
+│       │   ├── auth/      # Authentication module
+│       │   └── dashboard/ # Dashboard module
+│       ├── hooks/         # Custom hooks (grouped by feature)
+│       ├── lib/           # Shared utilities
+│       ├── providers/     # Context providers
+│       ├── routes/        # TanStack Router configuration
+│       ├── services/      # API services
+│       ├── stores/        # Zustand state management
+│       └── types/         # TypeScript type definitions
 ├── backend/           # Go backend API server
+│   ├── cmd/           # Application entrypoints
+│   └── pkg/           # Shared packages
 ├── docs/             # Comprehensive project documentation
-│   ├── 01-project-initialization.md
-│   ├── 02-technical-architecture.md
-│   ├── 03-development-workflow.md
-│   ├── 04-feature-modules.md
-│   ├── 05-deployment-guide.md
-│   └── 06-ui-design-system.md
-└── *.md files        # Project specifications and requirements
+└── *.md files        # Project specifications
 ```
 
 ## Development Commands
@@ -70,23 +79,20 @@ go test -cover ./... # Run tests with coverage
 # Using Makefile (recommended)
 make deps            # Install/update dependencies (calls go mod tidy)
 make run             # Build and start server
-make dev             # Start with air hot reload
+make dev             # Start with air hot reload (requires air installed)
 make test            # Run all tests
 make coverage        # Run tests with coverage
-make lint            # Run golangci-lint
+make lint            # Run golangci-lint (requires golangci-lint installed)
 make build           # Build binary
 make clean           # Clean build artifacts
+make docker-build    # Build Docker image
+make docker-run      # Run Docker container
 ```
 
-### Database Operations
+### Database Operations (Future)
 ```bash
 cd backend
-# Using golang-migrate directly
-migrate create -ext sql -dir migrations -seq migration_name
-migrate -path migrations -database "postgresql://localhost/smart_learning_dev?sslmode=disable" up
-migrate -path migrations -database "postgresql://localhost/smart_learning_dev?sslmode=disable" down 1
-
-# Using Makefile (recommended)
+# Using golang-migrate (when migrations are added)
 make migrate-create name=migration_name  # Create new migration
 make migrate-up                          # Apply all pending migrations
 make migrate-down                        # Rollback last migration
@@ -194,13 +200,33 @@ cp backend/.env.example backend/.env
 - **Database**: Supabase PostgreSQL
 - **Environment**: Docker containerization
 
+## Architecture Highlights
+
+### Frontend Architecture
+- **Feature-Based Organization**: Code organized by features (`auth/`, `dashboard/`) rather than technical layers
+- **Component Co-location**: Components, pages, and hooks grouped within feature modules
+- **Type-Safe Routing**: TanStack Router with generated route tree for compile-time safety
+- **Modern React**: React 19 with functional components and hooks
+- **Path Aliases**: `@` alias configured for clean imports from `src/`
+
+### Backend Architecture
+- **Minimal Setup**: Go backend with Gin framework, PostgreSQL database
+- **Package Structure**: Clean separation with `cmd/` for entrypoints and `pkg/` for shared code
+- **Development Tools**: Makefile for common tasks, Air for hot reload
+
+### Key Patterns
+- **State Management**: Zustand for client state, TanStack Query for server state
+- **Form Handling**: React Hook Form with Zod validation
+- **Styling**: TailwindCSS v4 with Shadcn UI components
+- **Testing**: Vitest with React Testing Library
+
 ## Important Notes
 
-- **Current Status**: Project is in planning phase with comprehensive documentation but minimal code implementation
-- **AI Integration**: Uses Claude Haiku API for generating explanations, memory techniques, and learning content
+- **Current Status**: Active development with basic authentication flow implemented
+- **AI Integration**: Planned Claude Haiku API integration for learning features
 - **Internationalization**: Primarily focused on English learning for Chinese speakers
-- **Security**: JWT-based authentication, input validation, SQL injection prevention
-- **Performance**: Query optimization, caching strategies, code splitting planned
+- **Security**: JWT-based authentication planned
+- **Performance**: Modern build tools with Vite for fast development
 
 ## Documentation References
 

@@ -2,8 +2,8 @@ import {
   AuthLayout,
   AuthHeader,
   AuthFormContainer,
+  AuthLinkButton,
   LoginForm,
-  RegisterButton,
 } from "@/features/auth/components";
 
 export const LoginPage = () => {
@@ -15,7 +15,11 @@ export const LoginPage = () => {
         <LoginForm />
 
         {/* 註冊連結 */}
-        <RegisterButton />
+        <AuthLinkButton
+          text="還沒有帳戶？"
+          buttonText="立即註冊"
+          targetNavigate="/auth/register"
+        />
       </AuthFormContainer>
     </AuthLayout>
   );

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { useNavigate } from "@tanstack/react-router";
 import { useAuthStore } from "@/stores/authStore";
+import { z } from "zod";
+import { toast } from "sonner";
 
 const loginSchema = z.object({
   email: z.email("請輸入有效的電子郵件"),
@@ -14,16 +15,15 @@ export type LoginFormData = z.infer<typeof loginSchema>;
 
 export const useLoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
   const { setAuth } = useAuthStore();
+  const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setError,
-  } = useForm<LoginFormData>({
+  const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
   const onSubmit = async (data: LoginFormData) => {
@@ -31,13 +31,12 @@ export const useLoginForm = () => {
     try {
       // TODO: 實際的登入邏輯，這裡先模擬成功登入
       console.log("Login attempt:", data);
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // !� API |�
-
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // 模擬 API 執行時間
       // 模擬登入成功，設定假的用戶資料
       const mockUser = {
         id: 1,
         email: data.email,
-        username: ",f(6",
+        username: "Tester",
         learning_level: 3,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
@@ -50,19 +49,14 @@ export const useLoginForm = () => {
       navigate({ to: "/dashboard" });
     } catch (error) {
       console.error("Login error:", error);
-      setError("root", {
-        type: "manual",
-        message: "登入失敗，請檢查您的帳號密碼",
-      });
+      toast.error(`登入失敗，${error}`);
     } finally {
       setIsLoading(false);
     }
   };
 
   return {
-    register,
-    handleSubmit,
-    errors,
+    form,
     isLoading,
     onSubmit,
   };

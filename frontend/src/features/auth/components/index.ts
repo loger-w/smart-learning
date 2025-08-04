@@ -1,7 +1,8 @@
 export { AuthLayout } from './AuthLayout';
 export { AuthHeader } from './AuthHeader';
+export { AuthButton } from './AuthButton';
+export { AuthLinkButton } from './AuthLinkButton';
 export { AuthFormContainer } from './AuthFormContainer';
-export { LoginButton } from './LoginButton';
 export { LoginForm } from './LoginForm';
 export { ForgotPasswordButton } from './ForgotPasswordButton';
-export { RegisterButton } from './RegisterButton';
+export { RegisterForm } from './RegisterForm';

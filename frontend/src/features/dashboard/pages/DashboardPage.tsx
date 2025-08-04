@@ -2,13 +2,13 @@ import { useAuthStore } from "@/stores/authStore";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "@tanstack/react-router";
 
-export const DashboardPage: React.FC = () => {
+export const DashboardPage = () => {
   const { user, logout } = useAuthStore();
   const router = useRouter();
 
   const handleLogout = () => {
     logout();
-    router.navigate({ to: "/login" });
+    router.navigate({ to: "/auth/login" });
   };
 
   return (
@@ -39,7 +39,7 @@ export const DashboardPage: React.FC = () => {
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">
-                歡迎回來，{user?.email ?? "使用者"}
+                歡迎回來，{user?.username ?? "使用者"}
               </span>
               <Button onClick={handleLogout} variant="outline" size="sm">
                 登出

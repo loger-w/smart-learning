@@ -1,14 +1,29 @@
 import { useAuthStore } from "@/stores/authStore";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "@tanstack/react-router";
+import { useLogout } from "@/hooks/auth/useAuth";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const DashboardPage = () => {
-  const { user, logout } = useAuthStore();
+  const { user, logout: clearAuth } = useAuthStore();
   const router = useRouter();
+  const logoutMutation = useLogout();
+  const queryClient = useQueryClient();
 
-  const handleLogout = () => {
-    logout();
-    router.navigate({ to: "/auth/login" });
+  const handleLogout = async () => {
+    try {
+      await logoutMutation.mutateAsync();
+      toast.success("已成功登出");
+      router.navigate({ to: "/auth/login" });
+    } catch (error) {
+      // 即使 API 失敗，也要確保清除本地狀態並導向登入頁
+      console.error("Logout error:", error);
+      clearAuth();
+      queryClient.clear();
+      toast.error("登出時發生錯誤，但已清除本地資料");
+      router.navigate({ to: "/auth/login" });
+    }
   };
 
   return (
@@ -41,8 +56,13 @@ export const DashboardPage = () => {
               <span className="text-sm text-gray-600">
                 歡迎回來，{user?.username ?? "使用者"}
               </span>
-              <Button onClick={handleLogout} variant="outline" size="sm">
-                登出
+              <Button 
+                onClick={handleLogout} 
+                variant="outline" 
+                size="sm"
+                disabled={logoutMutation.isPending}
+              >
+                {logoutMutation.isPending ? "登出中..." : "登出"}
               </Button>
             </div>
           </div>

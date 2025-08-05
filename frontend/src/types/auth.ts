@@ -1,3 +1,5 @@
+import type { APIResponse } from './api'
+
 export interface User {
   id: number
   email: string
@@ -8,14 +10,14 @@ export interface User {
   updated_at: string
 }
 
+export interface AuthResponse {
+  user: User
+  token: string
+}
+
 export interface LoginRequest {
   email: string
   password: string
-}
-
-export interface LoginResponse {
-  user: User
-  token: string
 }
 
 export interface RegisterRequest {
@@ -25,7 +27,7 @@ export interface RegisterRequest {
   confirm_password: string
 }
 
-export interface AuthError {
-  message: string
-  code?: string
-}
+export type LoginResponse = APIResponse<AuthResponse>
+export type RegisterResponse = APIResponse<AuthResponse>
+export type MeResponse = APIResponse<{ user: User }>
+

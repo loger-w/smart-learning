@@ -45,6 +45,16 @@ const authRoute = createRoute({
   component: () => <Outlet />,
 });
 
+// Auth index route (redirect /auth to /auth/login)
+const authIndexRoute = createRoute({
+  getParentRoute: () => authRoute,
+  path: "/",
+  beforeLoad: () => {
+    throw redirect({ to: "/auth/login" });
+  },
+  component: () => null,
+});
+
 // Login route
 const loginRoute = createRoute({
   getParentRoute: () => authRoute,
@@ -78,7 +88,7 @@ const dashboardRoute = createRoute({
   beforeLoad: () => {
     const isAuthenticated = checkAuth();
     if (!isAuthenticated) {
-      throw redirect({ to: "/login" });
+      throw redirect({ to: "/auth/login" });
     }
   },
   component: DashboardPage,
@@ -87,7 +97,7 @@ const dashboardRoute = createRoute({
 // Catch-all route for unmatched paths
 const catchAllRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "*",
+  path: "$",
   beforeLoad: () => {
     const isAuthenticated = checkAuth();
     if (!isAuthenticated) {
@@ -102,6 +112,7 @@ const catchAllRoute = createRoute({
 export const routeTree = rootRoute.addChildren([
   indexRoute,
   authRoute.addChildren([
+    authIndexRoute,
     loginRoute,
     registerRoute,
   ]),

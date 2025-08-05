@@ -89,10 +89,10 @@ make docker-build    # Build Docker image
 make docker-run      # Run Docker container
 ```
 
-### Database Operations (Future)
+### Database Operations
 ```bash
 cd backend
-# Using golang-migrate (when migrations are added)
+# Using golang-migrate
 make migrate-create name=migration_name  # Create new migration
 make migrate-up                          # Apply all pending migrations
 make migrate-down                        # Rollback last migration
@@ -222,10 +222,10 @@ cp backend/.env.example backend/.env
 
 ## Important Notes
 
-- **Current Status**: Active development with basic authentication flow implemented
+- **Current Status**: Active development with authentication flow implemented (registration/login/logout)
 - **AI Integration**: Planned Claude Haiku API integration for learning features
 - **Internationalization**: Primarily focused on English learning for Chinese speakers
-- **Security**: JWT-based authentication planned
+- **Security**: JWT-based authentication implemented
 - **Performance**: Modern build tools with Vite for fast development
 
 ## Documentation References
@@ -268,3 +268,39 @@ For detailed information, refer to the comprehensive documentation in the `docs/
   - Problematic code identification
   - Root cause analysis
   - Solution explanation
+
+## Current API Endpoints
+
+The backend currently implements the following API endpoints:
+
+### Authentication (`/api/v1/auth`)
+- **POST** `/register` - User registration with email, username, password validation
+- **POST** `/login` - User login with JWT token generation
+- **POST** `/logout` - User logout (requires JWT token)
+- **GET** `/me` - Get current user profile (requires JWT token)
+
+### System (`/`)
+- **GET** `/health` - Health check with database status
+- **GET** `/api/v1/ping` - Simple ping endpoint
+
+## Database Schema
+
+Current database tables implemented:
+- **users** - User accounts with authentication data
+  - Fields: id, email, username, password_hash, learning_level, avatar_url, created_at, updated_at
+  - Constraints: unique email, unique username, email validation, password requirements
+
+## Testing Configuration
+
+### Frontend Testing
+- **Test Runner**: Vitest with jsdom environment
+- **Testing Library**: React Testing Library for component testing
+- **Setup File**: `./src/test/setup.ts` for global test configuration
+- **Coverage**: Available via `npm run test:coverage`
+
+### Backend Testing
+- **Test Framework**: Go's built-in testing package
+- **Test Coverage**: Available via `make coverage`
+- **Test Structure**: Tests organized alongside source files with `_test.go` suffix
+
+所有程式碼請都使用 functional 的寫法

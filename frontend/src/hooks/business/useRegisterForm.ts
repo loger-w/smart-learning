@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
-import { useAuthStore } from "@/stores/authStore";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useRegister } from "../auth/useAuth";
+import { isAuthError, isValidationError } from "@/utils/errors";
 
 const registerSchema = z
   .object({
@@ -26,9 +26,8 @@ const registerSchema = z
 export type RegisterFormData = z.infer<typeof registerSchema>;
 
 export const useRegisterForm = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { setAuth } = useAuthStore();
   const navigate = useNavigate();
+  const registerMutation = useRegister();
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -42,38 +41,33 @@ export const useRegisterForm = () => {
   });
 
   const onSubmit = async (data: RegisterFormData) => {
-    setIsLoading(true);
     try {
-      // TODO: 實際的註冊邏輯，這裡先模擬成功註冊
-      console.log("Register attempt:", data);
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // 模擬 API 執行時間
-
-      // 模擬註冊成功，設定假的用戶資料
-      const mockUser = {
-        id: Date.now(), // 使用時間戳作為假的 ID
-        email: data.email,
-        username: data.username,
-        learning_level: 1, // 新用戶預設為初級
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-      const mockToken = "mock-jwt-token";
-
-      setAuth(mockUser, mockToken);
-
+      await registerMutation.mutateAsync(data);
+      toast.success("註冊成功！歡迎使用 Smart Learning");
       // 註冊成功後導向儀表板
       navigate({ to: "/dashboard" });
     } catch (error) {
       console.error("Register error:", error);
-      toast.error(`註冊失敗，${error}`);
-    } finally {
-      setIsLoading(false);
+      
+      if (isAuthError(error)) {
+        toast.error(error.message);
+      } else if (isValidationError(error)) {
+        // 處理驗證錯誤，設置表單錯誤
+        Object.entries(error.fields).forEach(([field, messages]) => {
+          if (field === 'email' || field === 'username' || field === 'password' || field === 'confirm_password') {
+            form.setError(field as keyof RegisterFormData, { message: messages[0] });
+          }
+        });
+        toast.error("請檢查輸入的資料");
+      } else {
+        toast.error("註冊失敗，請稍後再試");
+      }
     }
   };
 
   return {
     form,
-    isLoading,
+    isLoading: registerMutation.isPending,
     onSubmit,
   };
 };

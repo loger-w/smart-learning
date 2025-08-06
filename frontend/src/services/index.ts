@@ -1,2 +1,2 @@
-export { apiClient } from '../api/apiClient'
-export { authService } from '../api/services/authService'
+export { apiClient } from './api'
+export { authService } from './authService'

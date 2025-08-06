@@ -1,10 +1,9 @@
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { toast } from "sonner";
-import { useRegister } from "../auth/useAuth";
-import { isAuthError, isValidationError } from "@/utils/errors";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "@tanstack/react-router";
+import { useRegister } from "@/hooks/auth/useAuth";
 
 const registerSchema = z
   .object({
@@ -48,20 +47,8 @@ export const useRegisterForm = () => {
       navigate({ to: "/dashboard" });
     } catch (error) {
       console.error("Register error:", error);
-      
-      if (isAuthError(error)) {
-        toast.error(error.message);
-      } else if (isValidationError(error)) {
-        // 處理驗證錯誤，設置表單錯誤
-        Object.entries(error.fields).forEach(([field, messages]) => {
-          if (field === 'email' || field === 'username' || field === 'password' || field === 'confirm_password') {
-            form.setError(field as keyof RegisterFormData, { message: messages[0] });
-          }
-        });
-        toast.error("請檢查輸入的資料");
-      } else {
-        toast.error("註冊失敗，請稍後再試");
-      }
+
+      toast.error("註冊失敗，請稍後再試");
     }
   };
 

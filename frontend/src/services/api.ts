@@ -47,8 +47,7 @@ const createAPIClient = (baseURL: string) => {
     put: <T>(url: string, data = {}, config = {}) =>
       client.put<T>(url, data, config),
 
-    delete: <T>(url: string, config = {}) =>
-      client.delete<T>(url, config),
+    delete: <T>(url: string, config = {}) => client.delete<T>(url, config),
   };
 };
 

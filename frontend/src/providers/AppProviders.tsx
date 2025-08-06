@@ -1,7 +1,13 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
-import { router } from "@/routes";
+import { createRouter } from "@tanstack/react-router";
+
+// Import the generated route tree
+import { routeTree } from "../routeTree.gen";
+
+// Create a new router instance
+const router = createRouter({ routeTree });
 
 // 建立 QueryClient 實例
 const queryClient = new QueryClient({
@@ -12,7 +18,7 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
     },
     mutations: {
-      retry: 1,
+      retry: false,
     },
   },
 });

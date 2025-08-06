@@ -1,8 +1,12 @@
+import { toast } from "sonner";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { authService } from "@/api/services/authService";
 import { useAuthStore } from "@/stores/authStore";
-import type { LoginRequest, RegisterRequest } from "@/types/auth";
-import { isAuthError, isValidationError } from "@/utils/errors";
+import { authService } from "@/services/authService";
+import type {
+  LoginRequest,
+  RegisterRequest,
+  APIErrorResponse,
+} from "@/types/index";
 
 export const useLogin = () => {
   const { setAuth } = useAuthStore();
@@ -14,12 +18,9 @@ export const useLogin = () => {
       setAuth(data.user, data.token);
       queryClient.invalidateQueries({ queryKey: ["auth"] });
     },
-    onError: (error) => {
-      if (isAuthError(error) || isValidationError(error)) {
-        console.error("Login failed:", error.message);
-      } else {
-        console.error("Login failed:", error);
-      }
+    onError: (error: APIErrorResponse) => {
+      console.error("登入失敗", JSON.stringify(error));
+      toast(error.message);
     },
   });
 };
@@ -31,15 +32,12 @@ export const useRegister = () => {
   return useMutation({
     mutationFn: authService.register,
     onSuccess: (data) => {
+      console.log(data);
       setAuth(data.user, data.token);
       queryClient.invalidateQueries({ queryKey: ["auth"] });
     },
     onError: (error) => {
-      if (isAuthError(error) || isValidationError(error)) {
-        console.error("Registration failed:", error.message);
-      } else {
-        console.error("Registration failed:", error);
-      }
+      console.log(error);
     },
   });
 };

@@ -80,3 +80,6 @@ tmp/
 **/tmp/
 
 .vercel
+
+# TanStack Router auto-generated files
+**/routeTree.gen.ts

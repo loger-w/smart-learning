@@ -5,7 +5,7 @@ export interface User {
   email: string;
   username: string;
   learning_level: number;
-  avatar_url?: string;
+  avatar_url?: string | null;
   created_at: string;
   updated_at: string;
 }

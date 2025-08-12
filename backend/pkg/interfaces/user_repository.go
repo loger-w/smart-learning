@@ -9,3 +9,10 @@ type UserRepositoryInterface interface {
 	GetUserByID(id int) (*models.User, error)
 	CheckUserExists(email, username string) (bool, error)
 }
+
+// AuthServiceInterface 定義認證服務的介面
+type AuthServiceInterface interface {
+	Register(req *models.RegisterRequest) (*models.AuthResponse, error)
+	Login(req *models.LoginRequest) (*models.AuthResponse, error)
+	GetUserByID(id int) (*models.User, error)
+}

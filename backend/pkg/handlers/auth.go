@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"net/http"
+	"smart-learning-backend/pkg/interfaces"
 	"smart-learning-backend/pkg/models"
-	"smart-learning-backend/pkg/services"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -11,11 +11,11 @@ import (
 )
 
 type AuthHandler struct {
-	authService *services.AuthService
+	authService interfaces.AuthServiceInterface
 	validator   *validator.Validate
 }
 
-func NewAuthHandler(authService *services.AuthService) *AuthHandler {
+func NewAuthHandler(authService interfaces.AuthServiceInterface) *AuthHandler {
 	return &AuthHandler{
 		authService: authService,
 		validator:   validator.New(),
@@ -181,11 +181,36 @@ func (h *AuthHandler) Login(c *gin.Context) {
 }
 
 func (h *AuthHandler) Logout(c *gin.Context) {
+	// 從中介軟體中取得用戶資訊（已經通過認證）
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, models.APIResponse{
+			Success: false,
+			Message: "未授權",
+			Error: &models.APIError{
+				Code:    "UNAUTHORIZED",
+				Message: "無法獲取用戶資訊",
+			},
+		})
+		return
+	}
+
+	// 記錄登出資訊（用於日誌記錄）
+	username, _ := c.Get("username")
+	email, _ := c.Get("email")
+	
 	// 在實際應用中，這裡可以將 token 加入黑名單
-	// 目前簡單返回成功響應
+	// 目前使用 stateless JWT，客戶端丟棄 token 即完成登出
+	
 	c.JSON(http.StatusOK, models.APIResponse{
 		Success: true,
 		Message: "登出成功",
+		Data: map[string]interface{}{
+			"user_id":  userID,
+			"username": username,
+			"email":    email,
+			"message":  "已成功登出系統",
+		},
 	})
 }
 

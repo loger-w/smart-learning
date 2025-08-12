@@ -3,16 +3,16 @@ package services
 import (
 	"fmt"
 	"regexp"
+	"smart-learning-backend/pkg/interfaces"
 	"smart-learning-backend/pkg/models"
-	"smart-learning-backend/pkg/repositories"
 	"smart-learning-backend/pkg/utils"
 )
 
 type AuthService struct {
-	userRepo *repositories.UserRepository
+	userRepo interfaces.UserRepositoryInterface
 }
 
-func NewAuthService(userRepo *repositories.UserRepository) *AuthService {
+func NewAuthService(userRepo interfaces.UserRepositoryInterface) *AuthService {
 	return &AuthService{
 		userRepo: userRepo,
 	}

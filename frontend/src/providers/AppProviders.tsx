@@ -1,7 +1,10 @@
+import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { RouterProvider } from "@tanstack/react-router";
+
 import { Toaster } from "@/components/ui/sonner";
-import { createRouter } from "@tanstack/react-router";
+import { ThemeProvider } from "./ThemeProvider";
+
+import { Analytics } from "@vercel/analytics/react";
 
 // Import the generated route tree
 import { routeTree } from "../routeTree.gen";
@@ -29,9 +32,12 @@ interface AppProvidersProps {
 
 export const AppProviders: React.FC<AppProvidersProps> = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      <Toaster />
-    </QueryClientProvider>
+    <ThemeProvider defaultTheme="system" storageKey="smart-learning-theme">
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <Toaster />
+        <Analytics />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 };

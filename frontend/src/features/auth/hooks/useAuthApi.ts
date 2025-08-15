@@ -2,11 +2,7 @@ import { toast } from "sonner";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@/stores/authStore";
 import { authService } from "@/services/authService";
-import type {
-  LoginRequest,
-  RegisterRequest,
-  APIErrorResponse,
-} from "@/types/index";
+import type { APIErrorResponse } from "@/types/index";
 
 export const useLogin = () => {
   const { setAuth } = useAuthStore();
@@ -79,39 +75,4 @@ export const useLogout = () => {
       queryClient.clear();
     },
   });
-};
-
-// useAuth 作為狀態聚合器，使用其他 hooks 而不是重複實現邏輯
-export const useAuth = () => {
-  const { user, token, isAuthenticated } = useAuthStore();
-  const loginMutation = useLogin();
-  const registerMutation = useRegister();
-  const logoutMutation = useLogout();
-
-  const login = async (credentials: LoginRequest) => {
-    return loginMutation.mutateAsync(credentials);
-  };
-
-  const register = async (data: RegisterRequest) => {
-    return registerMutation.mutateAsync(data);
-  };
-
-  const logout = async () => {
-    return logoutMutation.mutateAsync();
-  };
-
-  return {
-    user,
-    token,
-    isAuthenticated,
-    login,
-    register,
-    logout,
-    isLoading:
-      loginMutation.isPending ||
-      registerMutation.isPending ||
-      logoutMutation.isPending,
-    error:
-      loginMutation.error || registerMutation.error || logoutMutation.error,
-  };
 };

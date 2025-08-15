@@ -3,11 +3,45 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
-import { useRegister } from "@/hooks/auth/useAuth";
+import { useLogin, useRegister } from "./useAuthApi";
 
+// Login Form Schema
+const loginSchema = z.object({
+  email: z.string().min(1, "請輸入電子郵件").pipe(z.email({ error: "請輸入有效的電子郵件" })),
+  password: z.string().min(1, "請輸入密碼").min(8, "密碼至少需要 8 個字符"),
+});
+
+export type LoginFormData = z.infer<typeof loginSchema>;
+
+export const useLoginForm = () => {
+  const navigate = useNavigate();
+  const loginMutation = useLogin();
+
+  const form = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data: LoginFormData) => {
+    await loginMutation.mutateAsync(data);
+    toast.success("登入成功！");
+    navigate({ to: "/dashboard" });
+  };
+
+  return {
+    form,
+    isLoading: loginMutation.isPending,
+    onSubmit,
+  };
+};
+
+// Register Form Schema
 const registerSchema = z
   .object({
-    email: z.string().min(1, "請輸入電子郵件").email("電子郵件格式不正確"),
+    email: z.string().min(1, "請輸入電子郵件").pipe(z.email({ error: "電子郵件格式不正確" })),
     username: z
       .string()
       .min(1, "請輸入用戶名")
@@ -43,11 +77,9 @@ export const useRegisterForm = () => {
     try {
       await registerMutation.mutateAsync(data);
       toast.success("註冊成功！歡迎使用 Smart Learning");
-      // 註冊成功後導向儀表板
       navigate({ to: "/dashboard" });
     } catch (error) {
       console.error("Register error:", error);
-
       toast.error("註冊失敗，請稍後再試");
     }
   };

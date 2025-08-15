@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { useLoginForm } from "@/hooks/auth/useLoginForm";
+import { useLoginForm } from "../hooks";
 import { AuthButton, ForgotPasswordButton } from "./";
 import {
   Form,

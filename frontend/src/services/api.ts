@@ -1,11 +1,20 @@
 import axios, { type AxiosInstance, AxiosError } from "axios";
 
 const getStoredToken = (): string | null => {
-  return localStorage.getItem("auth-token");
+  const authStore = localStorage.getItem("auth-store");
+  if (authStore) {
+    try {
+      const parsed = JSON.parse(authStore);
+      return parsed.state?.token || null;
+    } catch {
+      return null;
+    }
+  }
+  return null;
 };
 
 const handleUnauthorized = (): void => {
-  localStorage.removeItem("auth-token");
+  localStorage.removeItem("auth-store");
 };
 
 const handleResponseError = (error: AxiosError) => {

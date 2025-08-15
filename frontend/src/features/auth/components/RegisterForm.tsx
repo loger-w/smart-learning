@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { AuthButton } from "./";
-import { useRegisterForm } from "@/hooks/auth/useRegisterForm";
+import { useRegisterForm } from "../hooks";
 import {
   Form,
   FormControl,

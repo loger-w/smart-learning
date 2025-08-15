@@ -1,5 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { DashboardPage } from "@/features/dashboard/pages/DashboardPage";
+import { AppLayout } from "@/components/layout";
 import { useAuthStore } from "@/stores/authStore";
 
 export const Route = createFileRoute("/dashboard")({
@@ -9,5 +10,9 @@ export const Route = createFileRoute("/dashboard")({
       throw redirect({ to: "/auth/login" });
     }
   },
-  component: DashboardPage,
+  component: () => (
+    <AppLayout>
+      <DashboardPage />
+    </AppLayout>
+  ),
 });

@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface AuthFormContainerProps {
   children: React.ReactNode;
@@ -11,8 +12,10 @@ export const AuthFormContainer = ({
   className,
 }: AuthFormContainerProps) => {
   return (
-    <div className={cn("bg-white rounded-xl shadow-lg p-8", className)}>
-      {children}
-    </div>
+    <Card className={cn("shadow-lg", className)}>
+      <CardContent className="p-8">
+        {children}
+      </CardContent>
+    </Card>
   );
 };

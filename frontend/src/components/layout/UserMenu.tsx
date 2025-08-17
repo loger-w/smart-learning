@@ -11,15 +11,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { User, LogOut, Palette } from "lucide-react";
+import { useTheme } from "@/hooks/use-theme";
+import { User, LogOut, Palette, Sun, Moon, Monitor } from "lucide-react";
 
 export const UserMenu = () => {
   const { user, logout: clearAuth } = useAuthStore();
   const router = useRouter();
   const logoutMutation = useLogout();
   const queryClient = useQueryClient();
+  const { setTheme } = useTheme();
 
   const handleLogout = async () => {
     try {
@@ -54,18 +58,31 @@ export const UserMenu = () => {
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>我的帳戶</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="flex items-center justify-between">
-          <div className="flex items-center">
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
             <Palette className="mr-2 h-4 w-4" />
             主題設定
-          </div>
-          <ThemeToggle />
-        </DropdownMenuItem>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuItem onClick={() => setTheme("light")}>
+              <Sun className="mr-2 h-4 w-4" />
+              明亮模式
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("dark")}>
+              <Moon className="mr-2 h-4 w-4" />
+              深色模式
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("system")}>
+              <Monitor className="mr-2 h-4 w-4" />
+              系統預設
+            </DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={handleLogout}
           disabled={logoutMutation.isPending}
-          className="text-red-600 focus:text-red-600 focus:bg-red-50"
+          className="text-destructive focus:text-destructive focus:bg-destructive/10"
         >
           <LogOut className="mr-2 h-4 w-4" />
           {logoutMutation.isPending ? "登出中..." : "登出"}

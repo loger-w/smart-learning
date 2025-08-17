@@ -72,7 +72,7 @@ export const AppHeader = () => {
   };
 
   return (
-    <header className="bg-white shadow-sm border-b">
+    <header className="bg-background shadow-sm border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo and Title */}
@@ -80,7 +80,7 @@ export const AppHeader = () => {
             <div className="w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center">
               <TbBook />
             </div>
-            <h1 className="text-xl font-semibold text-gray-900">
+            <h1 className="text-xl font-semibold text-foreground">
               Smart Learning
             </h1>
           </div>
@@ -108,7 +108,7 @@ export const AppHeader = () => {
 
           {/* User Menu */}
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600 hidden sm:block">
+            <span className="text-sm text-muted-foreground hidden sm:block">
               歡迎回來，{user?.username ?? "使用者"}
             </span>
             <Button

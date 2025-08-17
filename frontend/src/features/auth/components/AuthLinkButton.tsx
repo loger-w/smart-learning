@@ -19,8 +19,8 @@ export const AuthLinkButton = ({
   };
 
   return (
-    <div className={"mt-8 pt-6 border-t border-gray-200 text-center"}>
-      <p className="text-gray-600 text-sm">
+    <div className={"mt-8 pt-6 border-t border-border text-center"}>
+      <p className="text-muted-foreground text-sm">
         {text}
         <Button
           onClick={handleNavigateToLogin}
